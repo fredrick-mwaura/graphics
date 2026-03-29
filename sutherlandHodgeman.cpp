@@ -35,7 +35,6 @@ bool insideBottom(Point p, ClipRect r) { return p.y >= r.ymin; }
 bool insideTop   (Point p, ClipRect r) { return p.y <= r.ymax; }
 
 // Clip a polygon against ONE edge.
-// This is the heart of Sutherland-Hodgman.
 //
 //   input  – polygon to clip
 //   inside – function that tests if a point is
@@ -82,8 +81,6 @@ std::vector<Point> clipAgainstEdge(
     return output;
 }
 
-// Full Sutherland-Hodgman Polygon Clipping
-//
 // Clips `polygon` against each of the 4 edges
 // of `rect`, feeding the output of one clip
 // step as input to the next.
@@ -91,9 +88,7 @@ std::vector<Point> sutherlandHodgman(
     std::vector<Point> polygon,
     ClipRect rect)
 {
-    // Clip against each edge in turn.
-    // Order doesn't matter for correctness, but
-    // left→right→bottom→top is conventional.
+    // Clip against each edge in turn(order do not matter).
     polygon = clipAgainstEdge(polygon, insideLeft,   'x', rect.xmin, rect);
     polygon = clipAgainstEdge(polygon, insideRight,  'x', rect.xmax, rect);
     polygon = clipAgainstEdge(polygon, insideBottom, 'y', rect.ymin, rect);
@@ -101,7 +96,6 @@ std::vector<Point> sutherlandHodgman(
     return polygon;
 }
 
-// Demo
 int main() {
     // A pentagon that partially overlaps the clip window
     std::vector<Point> polygon = {
