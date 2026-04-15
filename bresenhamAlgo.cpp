@@ -1,32 +1,37 @@
 #include <iostream>
-#include <cstdlib>
+#include <cmath>
 
-using namespace std;
-
-// Function to plot a point (for demonstration, we just print coordinates)
-void plotPoint(int x, int y) {
-    cout << "(" << x << ", " << y << ")" << endl;
+// Inline plotting function for performance
+inline void plotPoint(int x, int y) {
+    std::cout << "(" << x << ", " << y << ")\n";
 }
 
-// Bresenham's Line Drawing Algorithm
+// Optimized Bresenham Line Algorithm (all octants)
 void bresenhamLine(int x1, int y1, int x2, int y2) {
-    int dx = abs(x2 - x1);
-    int dy = abs(y2 - y1);
-    int sx = (x1 < x2) ? 1 : -1; // Step direction for x
-    int sy = (y1 < y2) ? 1 : -1; // Step direction for y
-    int err = dx - dy;           // Error term
+
+    const int dx = std::abs(x2 - x1);
+    const int dy = std::abs(y2 - y1);
+
+    const int sx = (x1 < x2) ? 1 : -1;
+    const int sy = (y1 < y2) ? 1 : -1;
+
+    int err = dx - dy;
 
     while (true) {
-        plotPoint(x1, y1); // Plot the current point
 
-        if (x1 == x2 && y1 == y2) break; // End condition
+        plotPoint(x1, y1);
 
-        int e2 = 2 * err;
-        if (e2 > -dy) { // Move in x direction
+        if (x1 == x2 && y1 == y2)
+            return;
+
+        const int e2 = err << 1;   // faster than 2 * err
+
+        if (e2 > -dy) {
             err -= dy;
             x1 += sx;
         }
-        if (e2 < dx) { // Move in y direction
+
+        if (e2 < dx) {
             err += dx;
             y1 += sy;
         }
@@ -34,22 +39,27 @@ void bresenhamLine(int x1, int y1, int x2, int y2) {
 }
 
 int main() {
+
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
     int x1, y1, x2, y2;
 
-    cout << "Enter x1 y1: ";
-    if (!(cin >> x1 >> y1)) {
-        cout << "Invalid input." << endl;
-        return 1;
+    std::cout << "Enter x1 y1: ";
+    if (!(std::cin >> x1 >> y1)) {
+        std::cerr << "Invalid input\n";
+        return EXIT_FAILURE;
     }
 
-    cout << "Enter x2 y2: ";
-    if (!(cin >> x2 >> y2)) {
-        cout << "Invalid input." << endl;
-        return 1;
+    std::cout << "Enter x2 y2: ";
+    if (!(std::cin >> x2 >> y2)) {
+        std::cerr << "Invalid input\n";
+        return EXIT_FAILURE;
     }
 
-    cout << "Points on the line:" << endl;
+    std::cout << "Points on the line:\n";
+
     bresenhamLine(x1, y1, x2, y2);
 
-    return 0;
+    return EXIT_SUCCESS;
 }
